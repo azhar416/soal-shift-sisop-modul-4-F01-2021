@@ -365,7 +365,7 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
  
 static int xmp_getattr(const char *path, struct stat *stbuf)
 {
-    
+    printf("PET : %s\n", path);
     char fpath[1000];
     bzero(fpath, 1000);
     int i, cekCipher = 0;
@@ -691,12 +691,330 @@ static int xmp_mkdir(const char *path, mode_t mode)
     
     return 0;
 }
+
+static int xmp_rename(const char *from, const char *to)
+{
+    printf("LER\n");
+    char f_from[1024], f_to[1024];
+    bzero(f_from, 1024);
+    bzero(f_to, 1024);
+    int i, cek_ciper = 0;
+
+    char* t;
+    if (strcmp(from, "/") != 0)
+    {
+        t = strstr(from, "/AtoZ_");
+        if (t)
+        {
+            cek_ciper = 1;
+            t++;
+        }
+    }
+
+    if (strcmp(from, "/") == 0)
+    {
+        from = dirpath;
+        sprintf(f_from, "%s", from);
+    }
+    else if (cek_ciper)
+    {
+        char befciper[1024];
+        bzero(befciper, 1024);
+        strncpy(befciper, from, strlen(from) - strlen(t));
+
+        char x[1024];
+        strcpy(x, t);
+        char* token;
+        char* s = x;
+
+        char tempo[1024];
+        i = 0;
+
+        for(; token = strtok_r(s, "/", &s); i++)
+        {
+            bzero(tempo, 1024);
+            if (i == 0)
+            {
+                strcpy(tempo, token);
+                strcat(befciper, tempo);
+                i = 1;
+                continue;
+            }
+
+            char tipe[1024];
+            bzero(tipe, 1024);
+            strcat(befciper, "/");
+            strcpy(tipe, befciper);
+            strcat(tipe, token);
+
+            if (strlen(tipe) == strlen(from))
+            {
+                char pathFolder[1024];
+                sprintf(pathFolder, "%s%s%s", dirpath, befciper, token);
+
+                DIR* dp = opendir(pathFolder);
+                if (!dp)
+                {
+                    char* dot = strchr(token, ".");
+
+                    char namaFile[1024];
+                    bzero(namaFile, 1024);
+                    if (dot)
+                    {
+                        strncpy(namaFile, token, strlen(token) - strlen(dot));
+                        char str[1024];
+                        strcpy(str, namaFile);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                        strcpy(namaFile, isi);
+                        strcat(namaFile, dot);
+                    }
+                    else
+                    {
+                        strcpy(namaFile, token);
+                        char str[1024];
+                        strcpy(str, namaFile);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                        strcpy(namaFile, isi);
+                    }
+                    strcat(befciper, namaFile);
+                }
+                else
+                {
+                    char namaFolder[1024];
+                    bzero(namaFolder, 1024);
+                    strcpy(namaFolder, token);
+                    char str[1024];
+                        strcpy(str, namaFolder);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                    strcpy(namaFolder, isi);
+                    strcat(befciper, namaFolder);
+                }
+            }
+            else
+            {
+                char namaFolder[1024];
+                bzero(namaFolder, 1024);
+                strcpy(namaFolder, token);
+                char str[1024];
+                    strcpy(str, namaFolder);
+                    int i;
+                    for (i = 0; i < strlen(str); i++)
+                    {
+                        if (str[i] >= 'A' && str[i] <= 'Z') {
+                            str[i] = 'Z' - (str[i] - 'A') ;
+                        }
+                        else if (str[i] >= 'a' && str[i] <= 'z') {
+                            str[i] = 'z' - (str[i] - 'a') ;
+                        }
+                    }
+                    char* isi = str;
+                strcpy(namaFolder, isi);
+                strcat(befciper, namaFolder);
+            }
+        }
+        sprintf(f_from, "%s%s", dirpath, befciper);
+    }
+    else
+    {
+        sprintf(f_from, "%s%s", dirpath, from);
+    }
+
+    cek_ciper = 0;
+
+    if (strcmp(to, "/") != 0)
+    {
+        t = strstr(to, "/AtoZ_");
+        if (t)
+        {
+            cek_ciper = 1;
+            t++;
+        }
+    }
+
+    if (strcmp(to, "/") == 0)
+    {
+        to = dirpath;
+        sprintf(f_to, "%s", to);
+    }
+    else if (cek_ciper)
+    {
+        char befciper[1024];
+        bzero(befciper, 1024);
+        strncpy(befciper, to, strlen(to) - strlen(t));
+
+        char x[1024];
+        strcpy(x, t);
+        char* token;
+        char* s = x;
+
+        char tempo[1024];
+        i = 0;
+
+        for(; token = strtok_r(s, "/", &s); i++)
+        {
+            bzero(tempo, 1024);
+            if (i == 0)
+            {
+                strcpy(tempo, token);
+                strcat(befciper, tempo);
+                i = 1;
+                continue;
+            }
+
+            char tipe[1024];
+            bzero(tipe, 1024);
+            strcat(befciper, "/");
+            strcpy(tipe, befciper);
+            strcat(tipe, token);
+
+            if (strlen(tipe) == strlen(to))
+            {
+                char pathFolder[1024];
+                sprintf(pathFolder, "%s%s%s", dirpath, befciper, token);
+
+                DIR* dp = opendir(pathFolder);
+                if (!dp)
+                {
+                    char* dot = strchr(token, ".");
+
+                    char namaFile[1024];
+                    bzero(namaFile, 1024);
+                    if (dot)
+                    {
+                        strncpy(namaFile, token, strlen(token) - strlen(dot));
+                        char str[1024];
+                        strcpy(str, namaFile);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                        strcpy(namaFile, isi);
+                        strcat(namaFile, dot);
+                    }
+                    else
+                    {
+                        strcpy(namaFile, token);
+                        char str[1024];
+                        strcpy(str, namaFile);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                        strcpy(namaFile, isi);
+                    }
+                    strcat(befciper, namaFile);
+                }
+                else
+                {
+                    char namaFolder[1024];
+                    bzero(namaFolder, 1024);
+                    strcpy(namaFolder, token);
+                    char str[1024];
+                        strcpy(str, namaFolder);
+                        int i;
+                        for (i = 0; i < strlen(str); i++)
+                        {
+                            if (str[i] >= 'A' && str[i] <= 'Z') {
+                                str[i] = 'Z' - (str[i] - 'A') ;
+                            }
+                            else if (str[i] >= 'a' && str[i] <= 'z') {
+                                str[i] = 'z' - (str[i] - 'a') ;
+                            }
+                        }
+                        char* isi = str;
+                    strcpy(namaFolder, isi);
+                    strcat(befciper, namaFolder);
+                }
+            }
+            else
+            {
+                char namaFolder[1024];
+                bzero(namaFolder, 1024);
+                strcpy(namaFolder, token);
+                char str[1024];
+                    strcpy(str, namaFolder);
+                    int i;
+                    for (i = 0; i < strlen(str); i++)
+                    {
+                        if (str[i] >= 'A' && str[i] <= 'Z') {
+                            str[i] = 'Z' - (str[i] - 'A') ;
+                        }
+                        else if (str[i] >= 'a' && str[i] <= 'z') {
+                            str[i] = 'z' - (str[i] - 'a') ;
+                        }
+                    }
+                    char* isi = str;
+                strcpy(namaFolder, isi);
+                strcat(befciper, namaFolder);
+            }
+        }
+        sprintf(f_to, "%s%s", dirpath, befciper);
+    }
+    else
+    {
+        sprintf(f_to, "%s%s", dirpath, to);
+    }
+
+    int res = rename(f_from, f_to);
+    printf("f_from : %s\n", f_from);
+    printf("f_to : %s\n", f_to);
+
+    if (res < 0)
+        return -errno;
+
+    return 0;
+}
  
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
     .readdir = xmp_readdir,
     .read = xmp_read,
     .mkdir = xmp_mkdir,
+    .rename = xmp_rename,
 };
 
 /* End XMP Field */
