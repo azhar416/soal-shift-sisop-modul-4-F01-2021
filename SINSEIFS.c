@@ -9,7 +9,7 @@
 #include <sys/time.h>
  
 static const char *dirpath = "/home/azhar416/Downloads";
- 
+
 /* XMP Field */
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
@@ -533,6 +533,19 @@ static int xmp_getattr(const char *path, struct stat *stbuf)
 
 static int xmp_mkdir(const char *path, mode_t mode)
 {
+    char* hadeuh = strchr(path, '/');
+    if (strstr(hadeuh, "AtoZ_"))
+    {
+        char path_log[1024];
+
+        FILE* file = fopen("inilog.log", "a");
+        char iyedah[10000];
+        sprintf(iyedah, "MKDIR : %s", path_log);
+        fprintf(file, "%s\n", iyedah);
+
+        fclose(file);
+    }
+
     char fpath[1024];
     bzero(fpath, 1024);
     int i, cek_ciper = 0;
@@ -694,7 +707,21 @@ static int xmp_mkdir(const char *path, mode_t mode)
 
 static int xmp_rename(const char *from, const char *to)
 {
-    printf("LER\n");
+    char* hadeuh = strchr(to, '/');
+    if (strstr(hadeuh, "AtoZ_"))
+    {
+        char ke[1024];
+        char dari[1024];
+        sprintf(dari, "%s%s", dirpath, from);
+        sprintf(ke, "%s%s", dirpath, to);
+
+        FILE* file = fopen("inilog.log", "a");
+        char iyedah[10000];
+        sprintf(iyedah, "RENAME : %s ==> %s", dari, ke);
+        fprintf(file, "%s\n", iyedah);
+
+        fclose(file);
+    }
     char f_from[1024], f_to[1024];
     bzero(f_from, 1024);
     bzero(f_to, 1024);
