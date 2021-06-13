@@ -628,7 +628,7 @@ static int xmp_getattr(const char *path, struct stat *stbuf)
         return -errno;
  
     const char* desc[] = {path}; 
-    systemlog("INFO", "READ", 1, desc);
+    systemlog("INFO", "GETATTR", 1, desc);
     return 0;
 }
 
